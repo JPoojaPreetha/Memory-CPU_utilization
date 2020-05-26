@@ -1,7 +1,14 @@
+'''
+input : log_file
+output : memory and cpu utilization graph
+'''
+
+
 import re
 import matplotlib.pyplot as plt
 from datetime import datetime
 
+#open and read the contents of the file
 infile=open('alpha_board_router_stats.txt','r')
 lines=infile.readlines()
 memfile=open("mem.txt",'w+')
@@ -13,6 +20,7 @@ memtime=[]
 cputime=[]
 memtotal=[]
 
+#slice lines to extract memory utilization values and cpu utilization values
 for line in lines:
     line=line.strip()
     if "Mem:   " in line:
@@ -29,10 +37,9 @@ for line in lines:
 
         
         
-#print("check : ", cputime[1])
+
 print("$$$ MEMORY stats  $$$")        
 print("total entries ", len(memused))
-#print("check: ",memused[2]," and ",memtime[2], " and ",memtotal[2])
 memused = [int(i) for i in memused]
 memtotal=[int(i) for i in memtotal]
 memused=[(i/j)*100 for i,j in zip(memused,memtotal)] #resultant memused -> percentage utilization ie memused/total memory
@@ -45,8 +52,6 @@ print("$$$ CPU stats  $$$")
 print("total entries : ",len(cpuused))
 #print("check :" ,cputime[2])
 cpuused = [100-float(i) for i in cpuused]   #cpuused -> percentage utilization
-#cpuused = [float(ele) if ele.isdigit() else ele for ele in cpuused]
-#cpuused=[100-i for i in cpuused]
 print("max : ",max(cpuused))
 print("min : ",min(cpuused))
 print("average : ",sum(cpuused)/len(cpuused))
@@ -55,6 +60,7 @@ print("average : ",sum(cpuused)/len(cpuused))
 memtime=[datetime.strptime(i,"%Y-%m-%d %H:%M:%S.%f") for i in memtime]
 #print(memtime[1])
 
+#plot graph for memory and cpu utilization 
 plt.plot(memtime,memused)
 plt.xlabel('time')
 plt.ylabel('percentage utilization')
